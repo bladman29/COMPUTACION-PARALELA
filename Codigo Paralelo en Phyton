@@ -1,0 +1,30 @@
+import multiprocessing
+import time
+
+def sum_partial(nums):
+    return sum(nums)
+
+if __name__ == "__main__":
+    nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    nums_size = len(nums)
+    num_threads = multiprocessing.cpu_count()
+    
+    # Dividir la lista en partes iguales para cada proceso
+    chunk_size = nums_size // num_threads
+    chunks = [nums[i:i + chunk_size] for i in range(0, nums_size, chunk_size)]
+    
+    start_time = time.time()
+    
+    # Crear un pool de procesos
+    with multiprocessing.Pool(processes=num_threads) as pool:
+        # Calcular la suma parcial en cada proceso
+        partial_sums = pool.map(sum_partial, chunks)
+    
+    # Sumar todos los resultados parciales 
+    total_sum = sum(partial_sums)
+    
+    end_time = time.time()
+    
+    print(f"La suma de los elementos es: {total_sum}")
+    print(f"Tiempo de ejecución: {end_time - start_time} segundos")
+    print(f"Número de hilos utilizados: {num_threads}")
